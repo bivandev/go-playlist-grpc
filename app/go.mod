@@ -1,4 +1,4 @@
-module example.com/go-playlist-grpc
+module github.com/go-playlist-grpc
 
 go 1.20
 

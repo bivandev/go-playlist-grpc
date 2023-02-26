@@ -4,7 +4,7 @@ import (
 	"log"
 	"net"
 
-	pb "example.com/go-playlist-grpc/proto"
+	pb "github.com/go-playlist-grpc/proto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )

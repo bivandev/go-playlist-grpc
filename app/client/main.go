@@ -1,23 +1,88 @@
 package main
 
 import (
+	"context"
+	"fmt"
 	"log"
+	"time"
 
-	pb "example.com/go-playlist-grpc/proto"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
+
+	pb "github.com/go-playlist-grpc/proto"
 )
 
-var addr string = "0.0.0.0:50051"
-
 func main() {
-	conn, err := grpc.Dial(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
-
+	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
 	if err != nil {
-		log.Fatalf("Did not connect: %v\n", err)
+		log.Fatalf("could not connect: %v", err)
+	}
+	defer conn.Close()
+
+	client := pb.NewPlaylistServiceClient(conn)
+
+	// Create new playlist
+	_, err = client.NewPlaylist(context.Background(), &pb.Empty{})
+	if err != nil {
+		log.Fatalf("could not create new playlist: %v", err)
 	}
 
-	defer conn.Close()
-	c := pb.NewPlaylistServiceClient(conn)
+	// Add songs to the playlist
+	songs := []struct {
+		name     string
+		duration time.Duration
+	}{
+		{"Song 1", 2 * time.Minute},
+		{"Song 2", 3 * time.Minute},
+		{"Song 3", 4 * time.Minute},
+	}
 
+	for _, song := range songs {
+		_, err = client.AddSong(context.Background(), &pb.Song{
+			Name:     song.name,
+			Duration: song.duration.Nanoseconds(),
+		})
+		if err != nil {
+			log.Fatalf("could not add song %s to playlist: %v", song.name, err)
+		}
+	}
+
+	// Get all songs in the playlist
+	resp, err := client.GetSongs(context.Background(), &pb.Empty{})
+	if err != nil {
+		log.Fatalf("could not get songs from playlist: %v", err)
+	}
+	for _, song := range resp.Songs {
+		fmt.Printf("Song name: %s, duration: %v\n", song.Name, time.Duration(song.Duration))
+	}
+
+	// Play the playlist
+	_, err = client.Play(context.Background(), &pb.Empty{})
+	if err != nil {
+		log.Fatalf("could not start playing playlist: %v", err)
+	}
+
+	// Pause the playlist
+	_, err = client.Pause(context.Background(), &pb.Empty{})
+	if err != nil {
+		log.Fatalf("could not pause playlist: %v", err)
+	}
+
+	// Skip to the next song in the playlist
+	_, err = client.Next(context.Background(), &pb.Empty{})
+	if err != nil {
+		log.Fatalf("could not skip to the next song: %v", err)
+	}
+
+	// Skip back to the previous song in the playlist
+	_, err = client.Prev(context.Background(), &pb.Empty{})
+	if err != nil {
+		log.Fatalf("could not skip back to the previous song: %v", err)
+	}
+
+	// Get information about a specific song in the playlist
+	resp, err = client.GetSong(context.Background(), &pb.SongRequest{Name: "Song 2"})
+	if err != nil {
+		log.Fatalf("could not get song information: %v", err)
+	}
+	fmt.Printf("Song name: %s, duration: %v\n", resp.Name, time.Duration(resp.Duration))
 }
