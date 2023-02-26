@@ -1,4 +1,4 @@
-module github.com/go-playlist-grpc
+module github.com/bivandev/go-playlist-grpc
 
 go 1.20
 

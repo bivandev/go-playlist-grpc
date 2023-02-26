@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package playlist;
 
-option go_package = "github.com/go-playlist-grpc;go_playlist_grpc";
+option go_package = "github.com/bivandev/go-playlist-grpc;go_playlist_grpc";
 
 service PlaylistService {
   rpc NewPlaylist(Empty) returns (NewPlaylistResponse) {}

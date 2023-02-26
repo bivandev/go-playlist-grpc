@@ -8,7 +8,7 @@ import (
 
 	"google.golang.org/grpc"
 
-	pb "github.com/go-playlist-grpc/proto"
+	pb "github.com/bivandev/go-playlist-grpc/proto"
 )
 
 func main() {

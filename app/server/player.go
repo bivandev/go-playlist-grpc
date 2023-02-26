@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	pb "github.com/go-playlist-grpc/proto"
+	pb "github.com/bivandev/go-playlist-grpc/proto"
 )
 
 type playlistServer struct {
