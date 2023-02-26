@@ -1,0 +1,70 @@
+syntax = "proto3";
+
+package playlist;
+
+option go_package = "example.com/go-playlist-grpc;go_playlist_grpc";
+
+service PlaylistService {
+  rpc NewPlaylist(Empty) returns (NewPlaylistResponse) {}
+  rpc AddSong(Song) returns (AddSongResponse) {}
+  rpc GetSongs(Empty) returns (GetSongsResponse) {}
+  rpc GetSong(SongRequest) returns (SongResponse) {}
+  rpc UpdateSong(Song) returns (UpdateSongResponse) {}
+  rpc DeleteSong(SongRequest) returns (DeleteSongResponse) {}
+  rpc Play(Empty) returns (PlayResponse) {}
+  rpc Pause(Empty) returns (PauseResponse) {}
+  rpc Next(Empty) returns (NextResponse) {}
+  rpc Prev(Empty) returns (PrevResponse) {}
+}
+
+message NewPlaylistResponse {
+  bool success = 1;
+}
+
+message Song {
+  string name = 1;
+  int64 duration = 2;
+}
+
+message Empty {}
+
+message SongRequest {
+  string name = 1;
+}
+
+message SongResponse {
+  string name = 1;
+  int64 duration = 2;
+}
+
+message AddSongResponse {
+  bool success = 1;
+}
+
+message GetSongsResponse {
+  repeated Song songs = 1;
+}
+
+message UpdateSongResponse {
+  bool success = 1;
+}
+
+message DeleteSongResponse {
+  bool success = 1;
+}
+
+message PlayResponse {
+  bool success = 1;
+}
+
+message PauseResponse {
+  bool success = 1;
+}
+
+message NextResponse {
+  bool success = 1;
+}
+
+message PrevResponse {
+  bool success = 1;
+}
