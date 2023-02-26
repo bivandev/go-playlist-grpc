@@ -7,12 +7,13 @@ import (
 	"time"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 
 	pb "github.com/bivandev/go-playlist-grpc/proto"
 )
 
 func main() {
-	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+	conn, err := grpc.Dial("localhost:50051", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("could not connect: %v", err)
 	}
@@ -39,7 +40,7 @@ func main() {
 	for _, song := range songs {
 		_, err = client.AddSong(context.Background(), &pb.Song{
 			Name:     song.name,
-			Duration: song.duration.Nanoseconds(),
+			Duration: int64(song.duration.Nanoseconds()),
 		})
 		if err != nil {
 			log.Fatalf("could not add song %s to playlist: %v", song.name, err)
@@ -80,9 +81,9 @@ func main() {
 	}
 
 	// Get information about a specific song in the playlist
-	resp, err = client.GetSong(context.Background(), &pb.SongRequest{Name: "Song 2"})
+	resp2, err := client.GetSong(context.Background(), &pb.SongRequest{Name: "Song 2"})
 	if err != nil {
 		log.Fatalf("could not get song information: %v", err)
 	}
-	fmt.Printf("Song name: %s, duration: %v\n", resp.Name, time.Duration(resp.Duration))
+	fmt.Printf("Song name: %s, duration: %v\n", resp2.Name, time.Duration(resp2.Duration))
 }

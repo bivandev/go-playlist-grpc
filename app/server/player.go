@@ -7,21 +7,17 @@ import (
 	pb "github.com/bivandev/go-playlist-grpc/proto"
 )
 
-type playlistServer struct {
-	playlist *Playlist
-}
-
-func (s *playlistServer) NewPlaylist(ctx context.Context, req *pb.Empty) (*pb.NewPlaylistResponse, error) {
+func (s *Server) NewPlaylist(ctx context.Context, req *pb.Empty) (*pb.NewPlaylistResponse, error) {
 	s.playlist = NewPlaylist()
 	return &pb.NewPlaylistResponse{Success: true}, nil
 }
 
-func (s *playlistServer) AddSong(ctx context.Context, req *pb.Song) (*pb.AddSongResponse, error) {
+func (s *Server) AddSong(ctx context.Context, req *pb.Song) (*pb.AddSongResponse, error) {
 	s.playlist.AddSong(&Song{Name: req.Name, Duration: req.Duration})
 	return &pb.AddSongResponse{Success: true}, nil
 }
 
-func (s *playlistServer) GetSongs(ctx context.Context, req *pb.Empty) (*pb.GetSongsResponse, error) {
+func (s *Server) GetSongs(ctx context.Context, req *pb.Empty) (*pb.GetSongsResponse, error) {
 	songs := make([]*pb.Song, 0)
 	node := s.playlist.head
 	for node != nil {
@@ -31,7 +27,7 @@ func (s *playlistServer) GetSongs(ctx context.Context, req *pb.Empty) (*pb.GetSo
 	return &pb.GetSongsResponse{Songs: songs}, nil
 }
 
-func (s *playlistServer) GetSong(ctx context.Context, req *pb.SongRequest) (*pb.SongResponse, error) {
+func (s *Server) GetSong(ctx context.Context, req *pb.SongRequest) (*pb.SongResponse, error) {
 	node := s.playlist.head
 	for node != nil {
 		if node.Song.Name == req.Name {
@@ -42,7 +38,7 @@ func (s *playlistServer) GetSong(ctx context.Context, req *pb.SongRequest) (*pb.
 	return nil, fmt.Errorf("song not found")
 }
 
-func (s *playlistServer) UpdateSong(ctx context.Context, req *pb.Song) (*pb.UpdateSongResponse, error) {
+func (s *Server) UpdateSong(ctx context.Context, req *pb.Song) (*pb.UpdateSongResponse, error) {
 	node := s.playlist.head
 	for node != nil {
 		if node.Song.Name == req.Name {
@@ -54,7 +50,7 @@ func (s *playlistServer) UpdateSong(ctx context.Context, req *pb.Song) (*pb.Upda
 	return nil, fmt.Errorf("song not found")
 }
 
-func (s *playlistServer) DeleteSong(ctx context.Context, req *pb.SongRequest) (*pb.DeleteSongResponse, error) {
+func (s *Server) DeleteSong(ctx context.Context, req *pb.SongRequest) (*pb.DeleteSongResponse, error) {
 	err := s.playlist.DelSong(req.Name)
 	if err != nil {
 		return nil, err
@@ -62,7 +58,7 @@ func (s *playlistServer) DeleteSong(ctx context.Context, req *pb.SongRequest) (*
 	return &pb.DeleteSongResponse{Success: true}, nil
 }
 
-func (s *playlistServer) Play(ctx context.Context, req *pb.Empty) (*pb.PlayResponse, error) {
+func (s *Server) Play(ctx context.Context, req *pb.Empty) (*pb.PlayResponse, error) {
 	err := s.playlist.Play()
 	if err != nil {
 		return nil, err
@@ -70,12 +66,12 @@ func (s *playlistServer) Play(ctx context.Context, req *pb.Empty) (*pb.PlayRespo
 	return &pb.PlayResponse{Success: true}, nil
 }
 
-func (s *playlistServer) Pause(ctx context.Context, req *pb.Empty) (*pb.PauseResponse, error) {
+func (s *Server) Pause(ctx context.Context, req *pb.Empty) (*pb.PauseResponse, error) {
 	s.playlist.Pause()
 	return &pb.PauseResponse{Success: true}, nil
 }
 
-func (s *playlistServer) Next(ctx context.Context, req *pb.Empty) (*pb.NextResponse, error) {
+func (s *Server) Next(ctx context.Context, req *pb.Empty) (*pb.NextResponse, error) {
 	err := s.playlist.Next()
 	if err != nil {
 		return nil, err
@@ -83,7 +79,7 @@ func (s *playlistServer) Next(ctx context.Context, req *pb.Empty) (*pb.NextRespo
 	return &pb.NextResponse{Success: true}, nil
 }
 
-func (s *playlistServer) Prev(ctx context.Context, req *pb.Empty) (*pb.PrevResponse, error) {
+func (s *Server) Prev(ctx context.Context, req *pb.Empty) (*pb.PrevResponse, error) {
 	err := s.playlist.Prev()
 	if err != nil {
 		return nil, err
