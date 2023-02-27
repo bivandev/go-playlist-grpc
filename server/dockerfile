@@ -1,11 +1,14 @@
-FROM golang:1.20
+FROM golang:1.20-alpine
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
 COPY go.mod go.sum ./
-RUN go mod download && go mod verify
 
-COPY . .
-RUN go build -v -o /usr/local/bin/app .
+RUN go mod download
 
-CMD ["app"]
+COPY proto proto
+COPY server server
+
+RUN go build -o /app/bin/server ./server
+
+ENTRYPOINT ["/app/bin/server"]

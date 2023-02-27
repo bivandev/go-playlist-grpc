@@ -1,37 +1,43 @@
+version: '3'
+
 services:
   db:
     image: postgres
     ports:
-      - "5432:5432"
+      - "5438:5432"
     restart: always
     environment:
       POSTGRES_USER: myuser
       POSTGRES_PASSWORD: secret
-      POSTGRES_DB: mydb
+      POSTGRES_DB: mybd
     volumes:
       - ./postgres-data:/var/lib/postgresql/data
 
   grpcserver:
     container_name: grpcserver
-    build: ./server
+    build:
+      context: .
+      dockerfile: ./server/Dockerfile
     ports:
-      - "8080:8080"
+      - 8080:8080
     environment:
       GRPC_SERVER_HOST: grpcserver
       GRPC_SERVER_PORT: 8080
     depends_on:
-      - db
+      - "db"
 
   grpcclient:
     container_name: grpcclient
-    build: ./client
+    build:
+      context: .
+      dockerfile: ./client/Dockerfile
     ports:
-      - "8081:8081"
+      - 8081:8081
     environment:
       GRPC_SERVER_HOST: grpcserver
       GRPC_SERVER_PORT: 8080
       GRPC_CLIENT_HOST: grpcclient
       GRPC_CLIENT_PORT: 8081
     depends_on:
-      - db
-      - grpcserver
+      - "db"
+      - "grpcserver"
