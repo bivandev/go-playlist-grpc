@@ -8,22 +8,7 @@ import (
 )
 
 func (s *Server) NewPlaylist(ctx context.Context, req *pb.Empty) (*pb.NewPlaylistResponse, error) {
-	_, err := s.db.Exec(`
-		CREATE TABLE IF NOT EXISTS playlist (
-			id SERIAL PRIMARY KEY,
-			current_song VARCHAR(255) DEFAULT NULL,
-			playing BOOLEAN DEFAULT false,
-			pause BOOLEAN DEFAULT false
-		)CREATE TABLE IF NOT EXISTS songs (
-			id SERIAL PRIMARY KEY,
-			playlist_id INTEGER NOT NULL REFERENCES playlist(id) ON DELETE CASCADE,
-			name VARCHAR(255) NOT NULL,
-			duration INTEGER NOT NULL
-		)`)
-	if err != nil {
-		return nil, err
-	}
-
+	var err error
 	s.playlist, err = NewPlaylist(s.db)
 	if err != nil {
 		return nil, err
