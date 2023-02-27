@@ -17,16 +17,21 @@ var addr string = "0.0.0.0:50051"
 
 type Server struct {
 	pb.PlaylistServiceServer
-	playlist *Playlist
-	db       *sql.DB
 }
+
+var (
+	db       *sql.DB
+	playlist *Playlist
+)
 
 func main() {
 	connStr := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
 		"db", 5432, "myuser", "secret", "mydb")
 
+	var err error
+
 	for i := 0; i < 10; i++ { // try connecting 10 times
-		db, err := sql.Open("postgres", connStr)
+		db, err = sql.Open("postgres", connStr)
 		if err != nil {
 			log.Println("Failed to connect to database:", err)
 			time.Sleep(5 * time.Second) // wait for 5 seconds before trying again
@@ -42,12 +47,10 @@ func main() {
 	}
 	defer db.Close()
 
-	err := db.Ping()
+	err = db.Ping()
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	log.Println("Connected to the database")
 
 	db.Exec(`
 		CREATE TABLE IF NOT EXISTS playlist (
@@ -55,7 +58,9 @@ func main() {
 			current_song VARCHAR(255) DEFAULT NULL,
 			playing BOOLEAN DEFAULT false,
 			pause BOOLEAN DEFAULT false
-		)CREATE TABLE IF NOT EXISTS songs (
+		)`)
+	db.Exec(`
+		CREATE TABLE IF NOT EXISTS songs (
 			id SERIAL PRIMARY KEY,
 			playlist_id INTEGER NOT NULL REFERENCES playlist(id) ON DELETE CASCADE,
 			name VARCHAR(255) NOT NULL,
