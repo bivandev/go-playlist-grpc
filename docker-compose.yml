@@ -3,8 +3,7 @@ version: '3'
 services:
   db:
     image: postgres
-    ports:
-      - "5438:5432"
+    container_name: database
     restart: always
     environment:
       POSTGRES_USER: myuser
@@ -18,11 +17,6 @@ services:
     build:
       context: .
       dockerfile: ./server/Dockerfile
-    ports:
-      - 50051:50051
-    environment:
-      GRPC_SERVER_HOST: grpcserver
-      GRPC_SERVER_PORT: 50051
     depends_on:
       - "db"
     networks:
@@ -33,13 +27,6 @@ services:
     build:
       context: .
       dockerfile: ./client/Dockerfile
-    ports:
-      - 50050:50050
-    environment:
-      GRPC_SERVER_HOST: grpcserver
-      GRPC_SERVER_PORT: 50051
-      GRPC_CLIENT_HOST: grpcclient
-      GRPC_CLIENT_PORT: 50050
     depends_on:
       - "grpcserver"
       - "db"

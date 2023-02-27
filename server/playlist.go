@@ -232,6 +232,7 @@ func (p *Playlist) Next() error {
 
 	return nil
 }
+
 func (p *Playlist) Prev() error {
 	p.mutex.Lock()
 	defer p.mutex.Unlock()
