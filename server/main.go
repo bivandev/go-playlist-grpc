@@ -64,7 +64,7 @@ func main() {
 			id SERIAL PRIMARY KEY,
 			playlist_id INTEGER NOT NULL REFERENCES playlist(id) ON DELETE CASCADE,
 			name VARCHAR(255) NOT NULL,
-			duration INTEGER NOT NULL
+			duration BIGINT NOT NULL
 		)`)
 
 	lis, err := net.Listen("tcp", addr)
