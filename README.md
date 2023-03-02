@@ -11,4 +11,4 @@ To run this app, you need to have Docker and Docker Compose installed on your ma
 - Clone this repository to your local machine.
 - Navigate to the project directory in your terminal.
 - Run the following command to start the app: `docker-compose up -d`
-- If you want see client logs use this comand: `docker-compose log grpcclient`
+- If you want see client logs use this comand: `docker-compose logs`
