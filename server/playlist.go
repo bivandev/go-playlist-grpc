@@ -97,7 +97,7 @@ func (p *Playlist) AddSong(s *Song) error {
 		p.head = newNode
 		p.tail = newNode
 
-		_, err := p.db.Exec("INSERT INTO playlist (current_song, playing, pause) VALUES ($1, $2, $3)", s.Name, false, false)
+		_, err := p.db.Exec("INSERT INTO playlist (id, current_song, playing, pause) VALUES ($1, $2, $3, $4)", 1, s.Name, false, false)
 		if err != nil {
 			return err
 		}
@@ -223,8 +223,6 @@ func (p *Playlist) Next() error {
 		return err
 	}
 
-	// If the current song in the database is different from the current song in memory,
-	// update the playing and pause flags accordingly
 	if currentSong != p.cur.Song.Name {
 		p.playing = true
 		p.pause = false
@@ -260,8 +258,6 @@ func (p *Playlist) Prev() error {
 		return err
 	}
 
-	// If the current song in the database is different from the current song in memory,
-	// update the playing and pause flags accordingly
 	if currentSong != p.cur.Song.Name {
 		p.playing = true
 		p.pause = false

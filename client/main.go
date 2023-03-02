@@ -35,14 +35,12 @@ func main() {
 		{"Song 1", 2 * time.Minute},
 		{"Song 2", 3 * time.Minute},
 		{"Song 3", 4 * time.Minute},
-		{"Song 4", 3 * time.Minute},
-		{"Song 3", 4 * time.Minute},
 	}
 
 	for _, song := range songs {
 		_, err = client.AddSong(context.Background(), &pb.Song{
 			Name:     song.name,
-			Duration: int64(song.duration.Milliseconds()),
+			Duration: int64(song.duration.Nanoseconds()),
 		})
 		if err != nil {
 			log.Fatalf("could not add song %s to playlist: %v", song.name, err)

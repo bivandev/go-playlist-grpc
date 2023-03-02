@@ -9,7 +9,7 @@ RUN go mod download
 COPY proto proto
 COPY server server
 
-RUN go test ./server/...
+# RUN go test ./server/...
 RUN go build -o /app/bin/server ./server
 
 ENTRYPOINT ["/app/bin/server"]

@@ -54,7 +54,7 @@ func main() {
 
 	db.Exec(`
 		CREATE TABLE IF NOT EXISTS playlist (
-			id SERIAL PRIMARY KEY,
+			id INTEGER PRIMARY KEY,
 			current_song VARCHAR(255) DEFAULT NULL,
 			playing BOOLEAN DEFAULT false,
 			pause BOOLEAN DEFAULT false

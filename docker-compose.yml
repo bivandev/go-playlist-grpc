@@ -19,7 +19,6 @@ services:
       dockerfile: ./server/Dockerfile
     depends_on:
       - "db"
-    
     networks:
       - app-tier
 
