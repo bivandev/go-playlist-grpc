@@ -1,0 +1,16 @@
+FROM golang:1.20.2-alpine3.17
+
+WORKDIR /app
+
+COPY go.mod go.sum ./
+
+RUN go mod download
+
+COPY proto proto
+COPY client client
+
+RUN go build -o /app/bin/client ./client
+
+EXPOSE 50050
+
+ENTRYPOINT ["/app/bin/client"]
