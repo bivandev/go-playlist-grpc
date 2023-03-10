@@ -7,8 +7,9 @@ import (
 	pb "github.com/bivandev/go-playlist-grpc/proto"
 )
 
+var playlist *Playlist
+
 func (s *Server) NewPlaylist(ctx context.Context, req *pb.Empty) (*pb.NewPlaylistResponse, error) {
-	var err error
 	playlist, err = NewPlaylist(db)
 	if err != nil {
 		return nil, err

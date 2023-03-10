@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  db:
+  database:
     image: postgres
     container_name: database
     restart: always
@@ -9,30 +9,31 @@ services:
       POSTGRES_USER: myuser
       POSTGRES_PASSWORD: secret
       POSTGRES_DB: mydb
-    networks:
-      - app-tier 
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
 
   grpcserver:
     container_name: grpcserver
     build:
       context: .
-      dockerfile: ./server/Dockerfile
+      dockerfile: dockerfile.server
     depends_on:
-      - "db"
-    networks:
-      - app-tier
+      - database
+    ports:
+      - "50051:50051"
 
   grpcclient:
     container_name: grpcclient
     build:
       context: .
-      dockerfile: ./client/Dockerfile
+      dockerfile: dockerfile.client
     depends_on:
-      - "grpcserver"
-      - "db"
-    networks:
-      - app-tier 
+      - grpcserver
+      - database
+    ports:
+      - "50050:50050"
 
-networks:
-  app-tier:
-    driver: bridge
+volumes:  
+  pgdata: {}
